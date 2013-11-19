@@ -4,7 +4,7 @@ Requires: 3.5
 License: The MIT License (MIT)
 License URI: http://opensource.org/licenses/MIT
 
-This plugin permit to centralize an access on secrets pages by codes.
+This plugin permits to centralize an access on secrets pages by codes.
 
 == Description ==
 
@@ -19,4 +19,4 @@ This plugin :
 
 For developers : 
 - You can change the name of markers and all wording on the define.php page.
-
+- Source project is available on bitbucket : https://bitbucket.org/DamsMar/wp_plugin_secret_page

@@ -3,7 +3,7 @@
 Plugin Name: SecretePage
 Description: This plugin permit to centralize an access on secrets pages by codes.
 Author: Damien Martin
-Version: 1.1.1
+Version: 1.2
 Licensed under the MIT license
 See LICENSE.txt file  or opensource.org/licenses/MIT
 Copyright (c) 2013 VerseauParis
@@ -19,7 +19,7 @@ require_once('define.php');
  */
 function dm_install() {
     global $wpdb;
-    $table = $wpdb->prefix."rm";
+    $table = $wpdb->prefix."dm";
     $structure = "CREATE TABLE $table (
         id INT(9) NOT NULL AUTO_INCREMENT,
         dm_email VARCHAR(200) NOT NULL,
@@ -54,7 +54,7 @@ add_action('admin_menu', 'register_dm_menu');
 function dm_manage_page($atts, $content = null ) {
 
     $returnVal = "";
-    if(is_RMCode_Correct('secret_code') ) {
+    if(is_DMCode_Correct('secret_code') ) {
         $returnVal = $content;
     }
     else {
@@ -70,7 +70,7 @@ function dm_manage_access_page() {
     if(isset($_REQUEST['code']) ) {
         $code = $_REQUEST['code'];
 
-        $urlRedirect = get_RMUrl($code);
+        $urlRedirect = get_DMUrl($code);
         if($urlRedirect !== false) {
             $params = array();
             $params['secret_code'] = $code;
@@ -100,8 +100,8 @@ function dm_manage_access_page() {
 //               TOOLS                  // 
 //////////////////////////////////////////
 // TOOLS
-function get_RMUrl($code) {
-    $settings = new RMSettings();
+function get_DMUrl($code) {
+    $settings = new DMSettings();
     $options = get_option('dm_options');
     $codes = array();
     
@@ -115,8 +115,8 @@ function get_RMUrl($code) {
     return false;
 }
 
-function is_RMCode_Correct($param_name) {
-    $settings = new RMSettings();
+function is_DMCode_Correct($param_name) {
+    $settings = new DMSettings();
     $options = get_option('dm_options');
     $URLs = array();
     $secret_code = $_REQUEST[$param_name];
@@ -147,14 +147,14 @@ function redirectTo($location, $method = 'GET',$args = null) {
     }
     else {
 
-        $javascriptCode =   "<form method='post' action='".$location."' id='RMForm'>\n";
+        $javascriptCode =   "<form method='post' action='".$location."' id='DMForm'>\n";
         foreach($args as $key => $value) { 
             $javascriptCode .=  "<input type='hidden' value='".$value."' name='".$key."'>\n";
         }
         $javascriptCode .=  "</form>\n";
         $javascriptCode .=  "<script type='text/javascript'>\n";
         $javascriptCode .=  "function formSend(){\n";
-        $javascriptCode .=  "    f=document.getElementById('RMForm');\n";
+        $javascriptCode .=  "    f=document.getElementById('DMForm');\n";
         $javascriptCode .=  "    if(f){\n";
         $javascriptCode .=  "        f.submit();\n";
         $javascriptCode .=  "    }\n";
@@ -186,7 +186,7 @@ add_action( 'init', 'dm_register_shortcodes');
 //            CLASS SETTINGS            // 
 //////////////////////////////////////////
 /* Settings */
-class RMSettings {
+class DMSettings {
     public $max_number_secrets_codes;
 
     public function __construct() {
@@ -194,12 +194,12 @@ class RMSettings {
     }
 }
 
-class RMSettingsPage {
+class DMSettingsPage {
     private $options;
     private $settings; // Class settings with values etc
     
     public function __construct() {
-        $this->settings = new RMSettings();
+        $this->settings = new DMSettings();
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
     }
@@ -213,7 +213,7 @@ class RMSettingsPage {
             'Settings', 
             PLUGIN_SETTINGS_NAME_DISPLAYED, 
             'manage_options', 
-            'rm-setting-admin', 
+            'dm-setting-admin', 
             array( $this, 'create_admin_page' )
         );
     }
@@ -230,7 +230,7 @@ class RMSettingsPage {
             <?php
                 // This prints out all hidden setting fields
                 settings_fields( 'dm_option_group' );   
-                do_settings_sections( 'rm-setting-admin' );
+                do_settings_sections( 'dm-setting-admin' );
                 submit_button(); 
             ?>
             </form>
@@ -254,7 +254,7 @@ class RMSettingsPage {
             'settings_section_description', // ID
             'Utilisation du plugin', // Title
             array( $this, 'print_section_description' ), // Callback
-            'rm-setting-admin' // Page
+            'dm-setting-admin' // Page
         );
 
         
@@ -263,14 +263,14 @@ class RMSettingsPage {
             'settings_section_0', // ID
             GENERAL_SETTINGS_LABEL, // Title
             array( $this, 'print_section_info' ), // Callback
-            'rm-setting-admin' // Page
+            'dm-setting-admin' // Page
         );
 
         add_settings_field(
            'urlCode', // ID
             HOME_PAGE_SETTINGS_LABEL, // Title 
             array( $this, 'general_settings_callback'), // Callback
-            'rm-setting-admin', // Page
+            'dm-setting-admin', // Page
             'settings_section_0', // Section
             array()
         );
@@ -281,7 +281,7 @@ class RMSettingsPage {
             'setting_section_id', // ID
             URLS_CODE_SETTINGS_LABEL,
             array( $this, 'print_section_info' ), // Callback
-            'rm-setting-admin' // Page
+            'dm-setting-admin' // Page
         );
 
         for ($i = 1 ; $i <= $this->settings->max_number_secrets_codes ; $i++) {
@@ -290,7 +290,7 @@ class RMSettingsPage {
                 'urlCode'.$i, // ID
                 $i.' - ', // Title 
                 array( $this, 'urlcode_callback'), // Callback
-                'rm-setting-admin', // Page
+                'dm-setting-admin', // Page
                 'setting_section_id', // Section
                 array("idx"=>$i)
           );
@@ -369,19 +369,19 @@ class RMSettingsPage {
  * Init if is admin 
  */
 if( is_admin() ) {
-    $my_settings_page = new RMSettingsPage();
+    $my_settings_page = new DMSettingsPage();
 }
 
 /* Handle form post
  * - Insert email on DB
  */
-if ($_POST['dm_subscribe']) {
+if (isset($_POST['dm_subscribe']) ) {
     $email = $_POST['dm_email'];
     if (is_email($email)) {
-        $query = "SELECT * FROM ".$wpdb->prefix."rm where dm_email like '".$wpdb->escape($email)."' limit 1";
+        $query = "SELECT * FROM ".$wpdb->prefix."dm where dm_email like '".$wpdb->escape($email)."' limit 1";
         $exists = mysql_query($query);
         if (mysql_num_rows($exists) < 1) {
-            $wpdb->query("insert into ".$wpdb->prefix."rm (dm_email) values ('".$wpdb->escape($email)."')");
+            $wpdb->query("insert into ".$wpdb->prefix."dm (dm_email) values ('".$wpdb->escape($email)."')");
         }
     }
 }
