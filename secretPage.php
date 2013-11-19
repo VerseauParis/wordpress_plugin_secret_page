@@ -54,7 +54,7 @@ add_action('admin_menu', 'register_dm_menu');
 function dm_manage_page($atts, $content = null ) {
 
     $returnVal = "";
-    if(is_RMCode_Correct('secret_code') ) {
+    if(is_DMCode_Correct('secret_code') ) {
         $returnVal = $content;
     }
     else {
@@ -70,7 +70,7 @@ function dm_manage_access_page() {
     if(isset($_REQUEST['code']) ) {
         $code = $_REQUEST['code'];
 
-        $urlRedirect = get_RMUrl($code);
+        $urlRedirect = get_DMUrl($code);
         if($urlRedirect !== false) {
             $params = array();
             $params['secret_code'] = $code;
@@ -100,7 +100,7 @@ function dm_manage_access_page() {
 //               TOOLS                  // 
 //////////////////////////////////////////
 // TOOLS
-function get_RMUrl($code) {
+function get_DMUrl($code) {
     $settings = new DMSettings();
     $options = get_option('dm_options');
     $codes = array();
