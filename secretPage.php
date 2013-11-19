@@ -3,7 +3,7 @@
 Plugin Name: SecretePage
 Description: This plugin permit to centralize an access on secrets pages by codes.
 Author: Damien Martin
-Version: 1.1
+Version: 1.1.1
 Licensed under the MIT license
 See LICENSE.txt file  or opensource.org/licenses/MIT
 Copyright (c) 2013 VerseauParis
