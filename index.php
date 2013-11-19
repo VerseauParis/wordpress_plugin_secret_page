@@ -13,13 +13,13 @@
 							$count = 0;
 							if (is_array($_POST['rem'])) {
 								foreach ($_POST['rem'] as $id) { 
-									$wpdb->query("delete from ".$wpdb->prefix."rm where id = '".$wpdb->escape($id)."' limit 1"); 
+									$wpdb->query("delete from ".$wpdb->prefix."dm where id = '".$wpdb->escape($id)."' limit 1"); 
 									$count++; 
 								}
 								$message = $count." subscribers have been removed successfully.";
 							}
 						}
-						
+						$message = NULL;
 						if ($_SERVER['REQUEST_METHOD']=="POST" and $_POST['dm_import']) {
 							$correct = 0;
 							if($_FILES['file']['tmp_name']) {
@@ -34,9 +34,9 @@
 											$row++;
 											
 											if (is_email(trim($data[0]))) {
-												$c = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."rm where dm_email LIKE '".$wpdb->escape(trim($data[0]))."' limit 1", ARRAY_A);
+												$c = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."dm where dm_email LIKE '".$wpdb->escape(trim($data[0]))."' limit 1", ARRAY_A);
 												if (!is_array($c)) {											
-													$wpdb->query("INSERT INTO ".$wpdb->prefix."rm (dm_email) VALUES ('".$wpdb->escape(trim($data[0]))."')");
+													$wpdb->query("INSERT INTO ".$wpdb->prefix."dm (dm_email) VALUES ('".$wpdb->escape(trim($data[0]))."')");
 													$correct++;
 												} else { $exists++; }
 											} else { $invalid++; }
@@ -70,7 +70,7 @@
                             </tfoot>
                             <tbody id="the-list">
 <?php 
-								$results = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."rm");
+								$results = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dm");
 								if (count($results)<1) echo '<tr class="no-items"><td colspan="3" class="colspanchange">No mailing list subscribers have been added.</td></tr>';
 								else {
 									foreach($results as $row) {
