@@ -3,7 +3,7 @@
 Plugin Name: SecretePage
 Description: This plugin permit to centralize an access on secrets pages by codes.
 Author: Damien Martin
-Version: 1.0
+Version: 1.1
 Licensed under the MIT license
 See LICENSE.txt file  or opensource.org/licenses/MIT
 Copyright (c) 2013 VerseauParis
@@ -88,7 +88,7 @@ function dm_manage_access_page() {
         $user_email = $_REQUEST['dm_email'];
     }
     $returnVal .= '<p class="dm_email"><label class="dm_emaillabel" for="dm_email">'.EMAIL_LABEL.' : </label><input class="dm_emailinput" name="dm_email" placeholder="'.EMAIL_PLACEHOLDER.'" type="email" value="'.$user_email.'" required></p>';
-    $returnVal .= "<p class='dm_code'><label class='labelCode' for='code'>".CODE_LABEL." : </label><input class='inputCode' id='code' name='code' type='number' placeholder='".CODE_PLACEHOLDER."' required/><br/></p>";
+    $returnVal .= "<p class='dm_code'><label class='labelCode' for='code'>".CODE_LABEL." : </label><input class='inputCode' id='code' name='code' type='text' placeholder='".CODE_PLACEHOLDER."' required/><br/></p>";
     $returnVal .= "<p class='dm_submit'><input class='submit_button' type='submit'/></p>";
     $returnVal .= "</form>";
     $returnVal .= "</div>";
