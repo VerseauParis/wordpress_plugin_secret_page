@@ -8,6 +8,7 @@
 				<form method="post" action="?page=<?php echo esc_js(esc_html($_GET['page'])); ?>">
             		<input name="dm_remove" value="1" type="hidden" />
 <?php 
+						/* REMOVE PROCESS */
 						if ($_SERVER['REQUEST_METHOD']=="POST" and $_POST['dm_remove']) {
 							if ($_GET['rem']) $_POST['rem'][] = $_GET['rem'];
 							$count = 0;
@@ -19,6 +20,16 @@
 								$message = $count." subscribers have been removed successfully.";
 							}
 						}
+						/* EXPORT PROCESS */
+						$file = fopen(dirname(__FILE__)."/file.csv", "w");
+						$results = $wpdb->get_results( "SELECT * FROM ".$wpdb->prefix."dm");
+						fwrite($file, "Email Address\r\n");
+						if (count($results))  {
+							foreach($results as $row) {
+								fwrite($file, $row->dm_email."\r\n");
+							}
+						}
+
 						$message = NULL;
 						if ($_SERVER['REQUEST_METHOD']=="POST" and $_POST['dm_import']) {
 							$correct = 0;
@@ -85,7 +96,7 @@
                             </tbody>
                         </table>
                         <br class="clear">
-						<input class="button" name="submit" type="submit" value="Remove Selected" /> <a class="button" href="<?php echo plugins_url( 'export-csv.php', __FILE__ ); ?>">Export as CSV</a>
+						<input class="button" name="submit" type="submit" value="Remove Selected" /> <a class="button" href="<?php echo plugins_url( 'export-csv.php?file=file.csv', __FILE__ ); ?>">Export as CSV</a>
 				</form>
 				<br class="clear">
                 <div class="meta-box-sortables">
