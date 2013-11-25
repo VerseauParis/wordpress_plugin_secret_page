@@ -3,7 +3,7 @@
 Plugin Name: SecretePage
 Description: This plugin permit to centralize an access on secrets pages by codes.
 Author: Damien Martin
-Version: 1.3
+Version: 1.4
 Licensed under the MIT license
 See LICENSE.txt file  or opensource.org/licenses/MIT
 Copyright (c) 2013 VerseauParis
@@ -378,8 +378,8 @@ if( is_admin() ) {
 if (isset($_POST['dm_subscribe']) ) {
     $email = $_POST['dm_email'];
     if (is_email($email)) {
-        $query = "SELECT * FROM ".$wpdb->prefix."dm where dm_email like '".$wpdb->escape($email)."' limit 1";
-        $exists = mysql_query($query);
+        $query = "SELECT * FROM ? where dm_email like ? limit 1";
+        $exists = mysql_prepare($query,array($wpdb->prefix."dm", $wpdb->escape($email)));
         if (mysql_num_rows($exists) < 1) {
             $wpdb->query("insert into ".$wpdb->prefix."dm (dm_email) values ('".$wpdb->escape($email)."')");
         }
